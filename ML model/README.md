@@ -18,11 +18,12 @@ Link: https://www.kaggle.com/datasets/equilibriumm/sleep-efficiency
 *Train Model – Splits data into training/testing sets and trains a Linear Regression model.
 *Predict TDO – Uses the model to predict TDO based on new inputs.
 
+<br> <br>
 
 # 2. Yawn + Blink:
 This simple python code detects drowsiness based on blink duration and yawns per minute. This data will be extracted from the hardware system. If either value exceeds a predefined limit aka theshold values, it triggers a drowsiness warning.
 
-# How did we determine theshold values?
+# How did we determine threshold values?
 ​The thresholds value of duration a blink is 3 seconds, this means if a person closes their eyes for more than this time, they are likely falling asleep.
 
 ​The thresholds value of yawning per minute is 4, which means more than 4 yawns in a minute indicate severe sleeplessness.
