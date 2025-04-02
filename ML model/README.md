@@ -11,12 +11,12 @@ P.S.: The dataset has other features as well, but only relevant ones are used.
 Link: https://www.kaggle.com/datasets/equilibriumm/sleep-efficiency
 
 # How it works?
-*Load and Clean Data – Reads the dataset, keeps relevant columns, and removes unnecessary ones.
-*Feature Engineering – Creates sleep quality ratios (Deep/Total, REM/Total, Light/Total).
-*Define Features (X) & Target (y) – Uses sleep efficiency, sleep stages, and awakenings to predict Time to Drowsiness Onset (TDO).
-*TDO Formula – Based on sleep duration, sleep quality, efficiency, and awakenings (more deep sleep & REM = longer TDO, more awakenings = shorter TDO).
-*Train Model – Splits data into training/testing sets and trains a Linear Regression model.
-*Predict TDO – Uses the model to predict TDO based on new inputs.
+1. Load and Clean Data – Reads the dataset, keeps relevant columns, and removes unnecessary ones.
+2. Feature Engineering – Creates sleep quality ratios (Deep/Total, REM/Total, Light/Total).
+3. Define Features (X) & Target (y) – Uses sleep efficiency, sleep stages, and awakenings to predict Time to Drowsiness Onset (TDO).
+4. TDO Formula – Based on sleep duration, sleep quality, efficiency, and awakenings (more deep sleep & REM = longer TDO, more awakenings = shorter TDO).
+5. Train Model – Splits data into training/testing sets and trains a Linear Regression model.
+6. Predict TDO – Uses the model to predict TDO based on new inputs.
 
 <br> <br>
 
@@ -33,10 +33,10 @@ These values are based on research linking prolonged blink durations and increas
 Regarding yawning, research has identified yawning as a significant indicator of driver fatigue. While specific thresholds for yawning frequency vary, an increase in yawning frequency is commonly associated with drowsiness. Setting a threshold of 4 yawns per minute aligns with findings that frequent yawning can indicate reduced alertness.
 
 # How It Works?
-*Define Limits – Sets max thresholds for blink duration (3 sec) and yawns per minute (4 yawns).
-*Check Drowsiness – If either value exceeds the limit, the person is considered drowsy.
-*Process Sensor Data – Calls check_drowsiness() to assess drowsiness and triggers a warning if needed.
-*Trigger Warning – If drowsy, prints "WARNING: uthja bhai marrna hai kya", simulating an app alert.
+1. Define Limits – Sets max thresholds for blink duration (3 sec) and yawns per minute (4 yawns).
+2. Check Drowsiness – If either value exceeds the limit, the person is considered drowsy.
+3. Process Sensor Data – Calls check_drowsiness() to assess drowsiness and triggers a warning if needed.
+4. Trigger Warning – If drowsy, prints "WARNING: uthja bhai marrna hai kya", simulating an app alert.
 
 
 
