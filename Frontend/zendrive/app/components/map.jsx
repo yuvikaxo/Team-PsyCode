@@ -11,10 +11,10 @@ import {
   useColorScheme,
 } from "react-native";
 import MapView, { Polyline, Marker, UrlTile } from "react-native-maps";
+import PanelSection from "./PanelSection";
+import OverlayPanel from "./OverlayPanel";
 
-const ORIGIN = { latitude: 28.855393, longitude: 78.771284 };
-const DESTINATION = { latitude: 28.853282, longitude: 78.773299 };
-const GRAPH_HOPPER_API_KEY = "b43ba286-2b19-46c3-8066-4bf24159527f";
+const StartCoord = { latitude: 28.855393, longitude: 78.771284 };
 
 const darkMapStyle = [
   {
@@ -37,48 +37,73 @@ const darkMapStyle = [
 ];
 
 const MapComponent = ({ children }) => {
-  const [currentLocation, setCurrentLocation] = useState(ORIGIN);
-  const [destination, setDestination] = useState(DESTINATION);
+  const [currentLocation, setCurrentLocation] = useState(StartCoord);
+  const [destinationCoord, setDestinationCoord] = useState();
   const [routeCoords, setRouteCoords] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [routeDetails, setRouteDetails] = useState({
+    distance: 10,
+    duration: 20,
+    start_place: "Sector 125 Noida, Uttar Pradesh",
+    end_place: "Palwal, Haryana",
+  });
 
   useEffect(() => {
-    if (destination) {
-      getRoute(currentLocation, destination);
-    }
-  }, [destination]);
-
-  const getRoute = async (origin, dest) => {
-    // try {
-    //   const url = `http://172.16.1.116:3000/maps/route?originLat=${origin.latitude}&originLon=${origin.longitude}&endpointLat=${dest.latitude}&endpointLon=${dest.longitude}`;
-    //   const response = await fetch(url);
-    //   const data = await response.json();
-    //   if (data.route.length > 0) {
-    //     setRouteCoords(data.route);
-    //   } else {
-    //     console.warn("No route found!");
-    //   }
-    // } catch (error) {
-    //   console.error("Error fetching route:", error);
+    // if (destinationCoord) {
+    //   getRoute(currentLocation, destinationCoord);
     // }
+  }, []);
+
+  const getRoute = async (start_place, end_place) => {
+    try {
+      const url = `http://192.168.228.212:8000/getRoute`;
+      const reqBody = {
+        start_place,
+        end_place,
+      };
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reqBody),
+      });
+
+      const data = await response.json();
+
+      if (data.routeCoordinates.length > 0) {
+        setRouteDetails({
+          start_place: data.start_place,
+          end_place: data.end_place,
+          start_coord: data.start_coord,
+          end_coord: data.end_coord,
+          distance: data.distance,
+          duration: data.duration,
+        });
+
+        setRouteCoords(data.routeCoordinates);
+      } else {
+        console.warn("No route found!");
+      }
+    } catch (error) {
+      console.error("Error fetching route:", error);
+    }
   };
 
-  const geocodeSearch = async () => {
-    // const encodedQuery = encodeURIComponent(searchQuery);
-    // const url = `https://graphhopper.com/api/1/geocode?q=${encodedQuery}&key=${GRAPH_HOPPER_API_KEY}`;
-    // try {
-    //   const response = await fetch(url);
-    //   const data = await response.json();
-    //   if (data.hits && data.hits.length > 0) {
-    //     const { lat, lng } = data.hits[0].point;
-    //     setDestination({ latitude: lat, longitude: lng });
-    //   } else {
-    //     Alert.alert("Location not found");
-    //   }
-    // } catch (error) {
-    //   console.error("Error in geocoding:", error);
-    // }
+  const handleSearchSubmit = async () => {
+    if (searchQuery.trim() === "") {
+      Alert.alert("Please enter a location to search.");
+      return;
+    }
+
+    try {
+      await getRoute(routeDetails.start_place, searchQuery); // Call the getRoute function with the search query as destination
+      setModalVisible(true);
+      setSearchQuery("");
+    } catch (e) {
+      console.error("Error in fetching route:", e);
+    }
   };
 
   return (
@@ -91,7 +116,7 @@ const MapComponent = ({ children }) => {
             placeholder="Search for a place"
             value={searchQuery}
             onChangeText={setSearchQuery}
-            onSubmitEditing={geocodeSearch}
+            onSubmitEditing={handleSearchSubmit}
           />
           <Search color="#999999" size={20} />
         </View>
@@ -101,8 +126,8 @@ const MapComponent = ({ children }) => {
       <MapView
         style={{ flex: 1 }}
         initialRegion={{
-          latitude: ORIGIN.latitude,
-          longitude: ORIGIN.longitude,
+          latitude: StartCoord.latitude,
+          longitude: StartCoord.longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
@@ -112,8 +137,8 @@ const MapComponent = ({ children }) => {
           urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           maximumZ={19}
         />
-        <Marker coordinate={ORIGIN} title="Start" />
-        <Marker coordinate={destination} title="End" />
+        {/* <Marker coordinate={ORIGIN} title="Start" />
+        <Marker coordinate={destination} title="End" /> */}
         {routeCoords.length > 0 && (
           <Polyline
             coordinates={routeCoords}
@@ -125,32 +150,48 @@ const MapComponent = ({ children }) => {
         {children}
       </MapView>
 
-      {/* Popup Modal */}
-      <Modal transparent={true} visible={modalVisible} animationType="slide">
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white p-6 rounded-lg w-80">
-            <Text className="text-lg font-semibold mb-2">Location Details</Text>
-
-            <View className="flex-row justify-between mt-4">
-              <TouchableOpacity
-                className="bg-blue-500 px-4 py-2 rounded-lg"
-                onPress={() => setModalVisible(false)}
-              >
-                <Text className="text-white">Close</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="bg-green-500 px-4 py-2 rounded-lg"
-                onPress={() => {
-                  setModalVisible(false);
-                  getRoute(currentLocation, destination);
-                }}
-              >
-                <Text className="text-white">Go To</Text>
-              </TouchableOpacity>
-            </View>
+      {/* PopUp */}
+      <OverlayPanel
+        title="Destination Details"
+        isVisible={modalVisible}
+        onClose={() => {
+          setModalVisible(false);
+        }}
+      >
+        {/* 
+          - Details to show here:
+          - Name
+          - Distance
+          - Duration to go there
+          - Set Destination button
+        */}
+        <View className="flex gap-3 mt-10">
+          <View className="">
+            <Text className="text-xl font-semibold">Target Location : </Text>
+            <Text className="text-xl text-center">
+              {routeDetails.end_place}
+            </Text>
+          </View>
+          <View className="justify-between flex flex-row">
+            <Text className="text-xl font-semibold">Distance : </Text>
+            <Text className="text-xl">{routeDetails.distance}</Text>
+          </View>
+          <View className="justify-between flex flex-row">
+            <Text className="text-xl font-semibold">Duration : </Text>
+            <Text className="text-xl">{routeDetails.duration}</Text>
+          </View>
+          <View className="justify-between flex flex-row">
+            <Text className="text-xl font-semibold">Sleepy after : </Text>
+            <Text className="text-xl">10</Text>
+          </View>
+          <View className="">
+            <Text className="text-xl font-semibold">
+              You will feel drowsy around :{" "}
+            </Text>
+            <Text className="text-xl text-center">working on it</Text>
           </View>
         </View>
-      </Modal>
+      </OverlayPanel>
     </View>
   );
 };
