@@ -7,8 +7,10 @@ import time
 
 # Load dlib’s face detector and facial landmark predictor
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 
+
+predictor_path = r"C:\Users\DELL\Desktop\Zendrive-Driver Fatigue OpenCV\Open-CV\shape_predictor_68_face_landmarks.dat"
+predictor = dlib.shape_predictor(predictor_path)
 # Indices for facial landmarks in dlib's 68-point model
 LEFT_EYE = list(range(42, 48))
 RIGHT_EYE = list(range(36, 42))
