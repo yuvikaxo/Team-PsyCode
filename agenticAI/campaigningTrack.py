@@ -1,39 +1,24 @@
-import speech_recognition as sr
-import pyttsx3
-from transformers import pipeline
+from vosk import Model, KaldiRecognizer
+import pyaudio
+import json
+import os
+from vosk import Model, KaldiRecognizer
 
-recognizer = sr.Recognizer()
-engine = pyttsx3.init()
-chatbot = pipeline("text-generation", model="gpt2")
+model_path = os.path.join(os.getcwd(), "vosk-model-small-en-us-0.15")
+model = Model(model_path)
+model = Model("model")  # path to the unzipped model folder
+recognizer = KaldiRecognizer(model, 16000)
 
-def listen():
-    with sr.Microphone() as source:
-        print("👂 Listening...")
-        audio = recognizer.listen(source, phrase_time_limit=5)
-        try:
-            text = recognizer.recognize_sphinx(audio)
-            print("🗣️ You said:", text)
-            return text
-        except:
-            print("❌ Didn't catch that.")
-            return ""
+p = pyaudio.PyAudio()
+stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000,
+                input=True, frames_per_buffer=8192)
+stream.start_stream()
 
-def speak(text):
-    engine.say(text)
-    engine.runAndWait()
-
-def respond(prompt):
-    result = chatbot(prompt, max_length=60, num_return_sequences=1)[0]['generated_text']
-    return result.split("\n")[0]
-
-print("🤖 Hello! I'm your fully offline AI assistant. Say something!")
+print("🎤 Speak now...")
 
 while True:
-    query = listen()
-    if "stop" in query.lower():
-        speak("Goodbye!")
-        break
-    if query:
-        reply = respond(query)
-        print("🤖", reply)
-        speak(reply)
+    data = stream.read(4096)
+    if recognizer.AcceptWaveform(data):
+        result = json.loads(recognizer.Result())
+        text = result.get("text", "")
+        print("🗣️ You said:", text)
