@@ -17,7 +17,7 @@ EYE_CASCADE_PATH = cv2.data.haarcascades + 'haarcascade_eye_tree_eyeglasses.xml'
 # MOUTH_CASCADE_PATH = cv2.data.haarcascades + 'haarcascade_smile.xml' # Optional/Experimental
 
 # --- Detection Parameters (CRITICAL TUNING FOR PI ZERO) ---
-FRAME_WIDTH = 320   # Start small for Pi Zero
+FRAME_WIDTH = 240   # Start small for Pi Zero
 FACE_SCALE_FACTOR = 1.2 # Adjust between 1.1 (sensitive, slow) and 1.4 (less sensitive, faster)
 FACE_MIN_NEIGHBORS = 4  # Adjust: Higher = fewer false positives, might miss faces
 FACE_MIN_SIZE = (40, 40)# Minimum face size (adjust based on distance)
