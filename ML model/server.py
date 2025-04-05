@@ -1,9 +1,37 @@
 from fastapi import FastAPI
+import numpy as np
 import uvicorn
 import openrouteservice
 from pydantic import BaseModel
+import pickle
 
 app = FastAPI()
+
+sample_data = [25, 85, 0.1, 0.20, 0.60, 1, 8]
+
+def get_tdo ( sample = sample_data ):
+    with open('tdo_model.pkl', 'rb') as file:
+        model = pickle.load(file)
+        
+    features = np.array(sample[:-1]).reshape(1, -1)
+    duration = sample[-1]
+    base_tdo = model.predict(features)
+    final_tdo = base_tdo[0] * (duration / 7.0) * np.power(duration / 7.0, 0.5)
+    return final_tdo
+
+def get_tdo_loc(route, duration_route, final_tdo, client):
+    # --- Locate position after TDO hours ---
+    tdo_seconds = final_tdo * 3600
+    line = route['features'][0]['geometry']['coordinates']
+    step = tdo_seconds / (duration_route * 3600)  # ratio of time passed
+    index = int(step * len(line))
+
+    if index < len(line):
+        future_position = line[index]
+        place = get_place_name_from_coords(future_position, client)
+        return place
+    else:
+        return None
 
 def get_coordinates(place_name, client):
         result = client.pelias_search(text=place_name)
@@ -13,6 +41,7 @@ def get_coordinates(place_name, client):
 def get_place_name_from_coords(coords, client):
         res = client.pelias_reverse(point=coords, size=1)
         return res['features'][0]['properties']['label']
+
 
 def get_route_data(start_place, end_place):
     client = openrouteservice.Client(key='5b3ce3597851110001cf6248f0228e3b0fb646b28c92af9d8cbb4562')
@@ -32,6 +61,8 @@ def get_route_data(start_place, end_place):
           
         {'latitude': coord[1], 'longitude': coord[0]} for coord in coordinates
     ]
+    tdo = get_tdo()
+    tdo_loc = get_tdo_loc(route, duration_route, tdo, client=client)
 
     return {
         "start_place": start_place,
@@ -46,7 +77,9 @@ def get_route_data(start_place, end_place):
         },
         "distance": distance,
         "duration": duration_route,
-        "routeCoordinates": converted_coords
+        "routeCoordinates": converted_coords,
+        "tdo": tdo,
+        "tdo_loc": tdo_loc
     }
 
 

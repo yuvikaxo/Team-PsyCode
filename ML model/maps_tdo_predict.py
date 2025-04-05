@@ -35,18 +35,20 @@ def TDO_Model():
     joblib.dump(model, "tdo_model.pkl")
     print("Model saved as 'tdo_model.pkl'")
 
-def get_route_data():
-    # --- OpenRouteService API for routing ---
-    client = openrouteservice.Client(key='5b3ce3597851110001cf6248f0228e3b0fb646b28c92af9d8cbb4562')
-
-    def get_coordinates(place_name):
+def get_coordinates(place_name):
         result = client.pelias_search(text=place_name)
         coords = result['features'][0]['geometry']['coordinates']
         return tuple(coords)
 
-    def get_place_name_from_coords(coords):
-        res = client.pelias_reverse(point=coords, size=1)
-        return res['features'][0]['properties']['label']
+def get_place_name_from_coords(coords):
+    res = client.pelias_reverse(point=coords, size=1)
+    return res['features'][0]['properties']['label']
+
+def get_route_data():
+    # --- OpenRouteService API for routing ---
+    client = openrouteservice.Client(key='5b3ce3597851110001cf6248f0228e3b0fb646b28c92af9d8cbb4562')
+
+   
 
     start_place = input("Enter starting location: ")
     end_place = input("Enter destination location: ")

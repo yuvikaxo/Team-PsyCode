@@ -47,6 +47,8 @@ const MapComponent = ({ children }) => {
     duration: 20,
     start_place: "Sector 125 Noida, Uttar Pradesh",
     end_place: "Palwal, Haryana",
+    tdo: 10,
+    tdo_loc: null,
   });
 
   useEffect(() => {
@@ -80,6 +82,8 @@ const MapComponent = ({ children }) => {
           end_coord: data.end_coord,
           distance: data.distance,
           duration: data.duration,
+          tdo: data.tdo,
+          tdo_loc: data.tdo_loc,
         });
 
         setRouteCoords(data.routeCoordinates);
@@ -181,15 +185,27 @@ const MapComponent = ({ children }) => {
             <Text className="text-xl">{routeDetails.duration}</Text>
           </View>
           <View className="justify-between flex flex-row">
-            <Text className="text-xl font-semibold">Sleepy after : </Text>
-            <Text className="text-xl">10</Text>
-          </View>
-          <View className="">
             <Text className="text-xl font-semibold">
-              You will feel drowsy around :{" "}
+              Sleepy after (hours) :{" "}
             </Text>
-            <Text className="text-xl text-center">working on it</Text>
+            <Text className="text-xl">{routeDetails.tdo}</Text>
           </View>
+          {routeDetails.tdo_loc ? (
+            <View className="">
+              <Text className="text-xl font-semibold">
+                You will feel drowsy around :{" "}
+              </Text>
+              <Text className="text-xl text-center">
+                {routeDetails.tdo_loc}
+              </Text>
+            </View>
+          ) : (
+            <View className="justify-between flex flex-row">
+              <Text className="text-xl font-semibold text-lime-900">
+                You are good to go on this journey
+              </Text>
+            </View>
+          )}
         </View>
       </OverlayPanel>
     </View>
