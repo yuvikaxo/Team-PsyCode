@@ -46,9 +46,7 @@ def get_place_name_from_coords(coords):
 
 def get_route_data():
     # --- OpenRouteService API for routing ---
-    client = openrouteservice.Client(key='5b3ce3597851110001cf6248f0228e3b0fb646b28c92af9d8cbb4562')
-
-   
+    client = openrouteservice.Client(key='API_key')
 
     start_place = input("Enter starting location: ")
     end_place = input("Enter destination location: ")
