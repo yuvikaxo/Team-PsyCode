@@ -1,6 +1,6 @@
-# IoT-Integrated Cognitive Fatigue Detection Using EXG
+# IoT-Integrated Cognitive Fatigue Detection Using EXG Biosignals & Computer Vision
 
-Biosignals & Computer VisionThis project detects driver drowsiness using **EMG (Electromyography) signals** captured through the **BioAmp EXG Pill** sensor connected to an Arduino. Real-time data is visualized using Python, and alerts are generated (beep sounds) when muscle activity drops below a defined threshold combined with eye and face data from Raspberry camera module — indicating possible fatigue or drowsiness.
+This project detects driver drowsiness using **EMG (Electromyography) signals** captured through the **BioAmp EXG Pill** sensor connected to an Arduino. Real-time data is visualized using Python, and alerts are generated (beep sounds) when muscle activity drops below a defined threshold combined with eye and face data from Raspberry camera module — indicating possible fatigue or drowsiness.
 
 ---
 
