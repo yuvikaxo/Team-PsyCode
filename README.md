@@ -67,5 +67,8 @@ Upload the Arduino sketch to your board to read analog EMG values from the BioAm
 - Beep sound plays when muscle activity is too low or eyes are closed for more than threshold value(possible drowsiness).
 
 
-  
+  ![image](https://github.com/user-attachments/assets/0d3c2084-64e4-4ea0-987a-05a1564beca9)
+![image](https://github.com/user-attachments/assets/93d7fa57-dc6e-4e5d-9fb4-1f9ebd6e48ca)
+![Screenshot 2025-04-13 125738](https://github.com/user-attachments/assets/6fb94292-0a3d-4901-8173-688a58bb92e1)
+![Screenshot 2025-04-13 125746](https://github.com/user-attachments/assets/e190d5fa-3eba-4286-99c3-f6bc8c403ec1)
 
