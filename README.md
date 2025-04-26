@@ -4,6 +4,9 @@ This project detects driver drowsiness using **EMG (Electromyography) signals** 
 
 ---
 
+## Video Demo
+Visit: https://youtube.com/shorts/ll5yq4PN2Z0
+
 ##  Key Features
 
 - Real-time EMG signal visualization using Biosignals, electrodes, arduino, matplotlib
